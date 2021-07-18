@@ -1,73 +1,62 @@
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
-import worker from 'pdfjs-dist/build/pdf.worker.entry'
+import pdf from './pdf'
+import helpers from './helpers'
 
-import helpers from './helpers/index.js'
-
-GlobalWorkerOptions.workerSrc = worker
-
-const citiesMap = new Map()
-
-const getPagesContent = async page => {
-  const textContent = await page.getTextContent()
-  const { items } = textContent
-
-  return items
-}
-
-const extractPageContent = content => {
-  return content
-    .filter(helpers.emptyString)
-    .filter(helpers.uppercaseOnlyOrNumbersString)
-    .filter(helpers.uselessString)
-}
-
-const populateCitiesMap = collection => {
-  const auxiliaryMap = new Map()
-
-  for (let item of collection) {
-    const key = item.transform[5] // position on y axis (row)
-
-    if (auxiliaryMap.has(key)) {
-      const valueOnKey = auxiliaryMap.get(key)
-
-      if (valueOnKey.length === 4) {
-        const [city, cases, deaths, first_doses] = valueOnKey
-        const data = { cases, deaths, first_doses, second_doses: item.str }
-
-        citiesMap.set(city, data)
-        auxiliaryMap.delete(key)
-      } else {
-        auxiliaryMap.set(key, [...valueOnKey, item.str])
-      }
-    } else {
-      auxiliaryMap.set(key, [item.str])
-    }
-  }
-}
-
-const onFileLoad = async e => {
-  const pagesToExtract = [5, 6]
-
-  const pdf = await getDocument(e.target.result).promise
-  const pages = await Promise.all(pagesToExtract.map(pageNumber => pdf.getPage(pageNumber)))
-  const rawPagesContent = await Promise.all(pages.map(getPagesContent))
-  const cleanPagesContent = rawPagesContent.map(extractPageContent)
-
-  cleanPagesContent.forEach(populateCitiesMap)
-
-  console.log(citiesMap)
-}
+import './index.css'
 
 (() => {
-  const input = document.getElementById('pdf')
+  const dropArea = document.querySelector('.droparea')
+  const input = document.querySelector('.input')
 
-  input.addEventListener('change', e => {
+  const preventDefault = e => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const onDropAreaClick = () => input.click()
+
+  const highlightDropArea = () => dropArea.classList.add('-highlight')
+  const removeHighlightDropArea = () => dropArea.classList.remove('-highlight')
+
+  const onDropAreaDragOver = e => {
+    preventDefault(e)
+    highlightDropArea()
+  }
+
+  const onDropAreaDrop = e => {
+    preventDefault(e)
+
+    const file = Array.prototype.find.call(e.dataTransfer.items, helpers.isPDF)
+
+    if (file) {
+      pdf.read(file.getAsFile())
+    }
+
+    removeHighlightDropArea()
+  }
+
+  const onInputChange = e => {
     const file = e.target.files[0]
 
     if (file) {
-      const reader = new FileReader()
-      reader.onload = onFileLoad
-      reader.readAsArrayBuffer(file)
+      pdf.read(file)
     }
-  })
+  }
+
+  const dropAreaEvents = {
+    'dragenter': highlightDropArea,
+    'dragleave': removeHighlightDropArea,
+    'dragover': onDropAreaDragOver,
+    'drop': onDropAreaDrop,
+    'click': onDropAreaClick,
+  }
+
+  const inputEvents = {
+    'change': onInputChange
+  }
+
+  Object.entries(dropAreaEvents)
+    .forEach(([event, callback]) => dropArea.addEventListener(event, callback))
+
+  Object.entries(inputEvents)
+    .forEach(([event, callback]) => input.addEventListener(event, callback))
 })()
