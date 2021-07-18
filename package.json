@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.14.6",
-    "pdfjs-dist": "^2.8.335"
+    "pdfjs-dist": "^2.8.335",
+    "zipcelx": "^1.6.2"
   }
 }

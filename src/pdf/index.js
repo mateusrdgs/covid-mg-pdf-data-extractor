@@ -1,12 +1,13 @@
 
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
+import zipcelx from 'zipcelx'
 import worker from 'pdfjs-dist/build/pdf.worker.entry'
 
 import helpers from '../helpers/index.js'
 
 GlobalWorkerOptions.workerSrc = worker
 
-const citiesMap = new Map()
+const cities = []
 
 const getPagesContent = async page => {
   const textContent = await page.getTextContent()
@@ -33,9 +34,9 @@ const populateCitiesMap = collection => {
 
       if (valueOnKey.length === 4) {
         const [city, cases, deaths, first_doses] = valueOnKey
-        const data = { cases, deaths, first_doses, second_doses: item.str }
+        const data = { city, cases, deaths, first_doses, second_doses: item.str }
 
-        citiesMap.set(city, data)
+        cities.push(data)
         auxiliaryMap.delete(key)
       } else {
         auxiliaryMap.set(key, [...valueOnKey, item.str])
@@ -56,7 +57,35 @@ const onFileLoad = async e => {
 
   cleanPagesContent.forEach(populateCitiesMap)
 
-  console.log(citiesMap)
+  const header = [
+    { value: 'Cidade', type: 'string' },
+    { value: 'Casos', type: 'string' },
+    { value: 'Mortes', type: 'string' },
+    { value: 'Dose 1', type: 'string' },
+    { value: 'Dose 2', type: 'string' }
+  ]
+
+  const toXLSX = cities.map(({ city, cases, deaths, first_doses, second_doses }) => {
+    return [
+      { value: city, type: 'string' },
+      { value: cases, type: 'string' },
+      { value: deaths, type: 'string' },
+      { value: first_doses, type: 'string' },
+      { value: second_doses, type: 'string' }
+    ]
+  })
+
+  const config = {
+    filename: `covid-mg-${Date.now()}`,
+    sheet: {
+      data: [
+        header,
+        ...toXLSX
+      ]
+    }
+  }
+
+  zipcelx(config)
 }
 
 const read = file => {
