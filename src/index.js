@@ -42,6 +42,10 @@ import './index.css'
     }
   }
 
+  const onInputClick = e => {
+    e.target.value = null
+  }
+
   const dropAreaEvents = {
     'dragenter': highlightDropArea,
     'dragleave': removeHighlightDropArea,
@@ -51,7 +55,8 @@ import './index.css'
   }
 
   const inputEvents = {
-    'change': onInputChange
+    'change': onInputChange,
+    'click': onInputClick
   }
 
   Object.entries(dropAreaEvents)
