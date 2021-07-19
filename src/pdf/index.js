@@ -7,8 +7,6 @@ import helpers from '../helpers/index.js'
 
 GlobalWorkerOptions.workerSrc = worker
 
-const cities = []
-
 const getPagesContent = async page => {
   const textContent = await page.getTextContent()
   const { items } = textContent
@@ -23,7 +21,8 @@ const extractPageContent = content => {
     .filter(helpers.uselessString)
 }
 
-const populateCitiesMap = collection => {
+const extractCitiesData = collection => {
+  const cities = []
   const auxiliaryMap = new Map()
 
   for (let item of collection) {
@@ -45,18 +44,11 @@ const populateCitiesMap = collection => {
       auxiliaryMap.set(key, [item.str])
     }
   }
+
+  return cities
 }
 
-const onFileLoad = async e => {
-  const pagesToExtract = [5, 6]
-
-  const pdf = await getDocument(e.target.result).promise
-  const pages = await Promise.all(pagesToExtract.map(pageNumber => pdf.getPage(pageNumber)))
-  const rawPagesContent = await Promise.all(pages.map(getPagesContent))
-  const cleanPagesContent = rawPagesContent.map(extractPageContent)
-
-  cleanPagesContent.forEach(populateCitiesMap)
-
+const saveAsXlsx = cities => {
   const header = [
     { value: 'Cidade', type: 'string' },
     { value: 'Casos', type: 'string' },
@@ -86,6 +78,21 @@ const onFileLoad = async e => {
   }
 
   zipcelx(config)
+}
+
+const onFileLoad = async e => {
+  const pagesToExtract = [5, 6]
+
+  const pdf = await getDocument(e.target.result).promise
+  const pages = await Promise.all(pagesToExtract.map(pageNumber => pdf.getPage(pageNumber)))
+  const rawPagesContent = await Promise.all(pages.map(getPagesContent))
+  const cleanPagesContent = rawPagesContent.map(extractPageContent)
+
+  const cities = cleanPagesContent
+    .map(extractCitiesData)
+    .reduce((acc, cities) => acc.concat(cities), [])
+
+  saveAsXlsx(cities)
 }
 
 const read = file => {
