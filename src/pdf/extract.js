@@ -1,5 +1,4 @@
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
-import zipcelx from 'zipcelx'
+import { GlobalWorkerOptions } from 'pdfjs-dist'
 import worker from 'pdfjs-dist/build/pdf.worker.entry'
 
 import helpers from '../helpers/index.js'
