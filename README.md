@@ -6,3 +6,5 @@ After inputing a PDF, this application will provide you back a xlsx (an Excel) f
 
 | city name | number of cases | deaths | vaccines first doses | vaccines second doses |
 |-----------|-----------------|--------|----------------------|-----------------------|
+
+The application can be found [here](https://covid-mg-pdf-data-extractor.vercel.app/).
