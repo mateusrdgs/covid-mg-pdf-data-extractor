@@ -20,7 +20,7 @@ const usefulData = content => {
 }
 
 const citiesData = collection => {
-  const cities = []
+  const cities = new Map()
   const auxiliaryMap = new Map()
 
   for (let item of collection) {
@@ -30,10 +30,10 @@ const citiesData = collection => {
       const valueOnKey = auxiliaryMap.get(key)
 
       if (valueOnKey.length === 4) {
-        const [city, cases, deaths, first_doses] = valueOnKey
-        const data = { city, cases, deaths, first_doses, second_doses: item.str }
+        const [name, cases, deaths, first_doses] = valueOnKey
+        const data = { name, cases, deaths, first_doses, second_doses: item.str }
 
-        cities.push(data)
+        cities.set(name, data)
         auxiliaryMap.delete(key)
       } else {
         auxiliaryMap.set(key, [...valueOnKey, item.str])

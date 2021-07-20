@@ -3,6 +3,7 @@ import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import worker from 'pdfjs-dist/build/pdf.worker.entry'
 
 import helpers from '../helpers'
+import citiesSet from '../helpers/cities-set'
 import extract from './extract'
 import xlsx from './xlsx'
 
@@ -16,9 +17,17 @@ const onFileLoad = async e => {
   const rawPagesContent = await Promise.all(pages.map(extract.pageContent))
   const cleanPagesContent = rawPagesContent.map(extract.usefulData)
 
-  const cities = cleanPagesContent
+  const citiesMap = cleanPagesContent
     .map(extract.citiesData)
-    .reduce(helpers.toSingleCollection, [])
+    .reduce(helpers.toSingleCollection, new Map())
+
+  const cities = []
+
+  for (let city of citiesSet) {
+    if (citiesMap.has(city)) {
+      cities.push(citiesMap.get(city))
+    }
+  }
 
   xlsx.download(cities)
 }

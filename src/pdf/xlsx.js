@@ -9,9 +9,9 @@ const download = cities => {
     { value: 'Dose 2', type: 'string' }
   ]
 
-  const toXLSX = cities.map(({ city, cases, deaths, first_doses, second_doses }) => {
+  const toXLSX = cities.map(({ name, cases, deaths, first_doses, second_doses }) => {
     return [
-      { value: city, type: 'string' },
+      { value: name, type: 'string' },
       { value: cases, type: 'string' },
       { value: deaths, type: 'string' },
       { value: first_doses, type: 'string' },
@@ -35,3 +35,4 @@ const download = cities => {
 export default {
   download
 }
+
