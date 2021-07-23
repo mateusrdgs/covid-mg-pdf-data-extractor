@@ -4,21 +4,12 @@ import pdf from '../pdf'
 import helpers from '../helpers'
 
 class DropArea extends Element {
-  _input
-
-  constructor(input) {
+  constructor() {
     const selector = '.droparea'
-    const events = ['dragenter', 'dragleave', 'dragover', 'drop', 'click']
-    const handlers = ['_highlight', '_removeHighlight', '_mouseOver', '_dropFile', '_click']
+    const events = ['dragenter', 'dragleave', 'dragover', 'drop']
+    const handlers = ['_highlight', '_removeHighlight', '_mouseOver', '_dropFile']
 
     super(selector, events, handlers)
-
-    this._input = input
-  }
-
-  // instead of dropping, user choose to manually upload the file
-  _click() {
-    this._input.click()
   }
 
   _highlight() {

@@ -4,7 +4,7 @@ import DropArea from "./drop-area";
 class UI {
   constructor() {
     this._input = new Input()
-    this._dropArea = new DropArea(this._input)
+    this._dropArea = new DropArea()
   }
 
   start() {

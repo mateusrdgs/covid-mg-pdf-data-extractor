@@ -29,6 +29,7 @@ body {
   margin: 0 auto;
   max-width: 480px;
   padding: 36px;
+  position: relative;
   text-align: center;
   transition: background-color .2s ease-in, color .2s ease-in;
   width: 90%;
@@ -40,10 +41,16 @@ body {
   color: white;
 }
 
-.droparea:hover {
-  cursor: pointer;
+.droparea > .input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  width: 100%;
 }
 
-.droparea > .input {
-  display: none;
+.droparea > .input:hover {
+  cursor: pointer;
 }
