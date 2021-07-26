@@ -12,9 +12,13 @@ class Input extends Element {
   _change(e) {
     const file = e.target.files[0]
 
-    if (file) {
-      this.read(file)
-    }
+    this._element.parentNode.classList.add('-hidden')
+    
+    document.querySelector('.form').classList.add('-show')
+
+    // if (file) {
+    //   this.read(file)
+    // }
   }
 
   _click() {

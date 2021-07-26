@@ -28,11 +28,15 @@ class DropArea extends Element {
     this.preventDefault(e)
     this._removeHighlight()
 
+    this._element.classList.add('-hidden')
+    
+    document.querySelector('.form').classList.add('-show')
+
     const file = Array.prototype.find.call(e.dataTransfer.items, Helpers.isPDFFile)
 
-    if (file) {
-      await this.read(file.getAsFile())
-    }
+    // if (file) {
+    //   await this.read(file.getAsFile())
+    // }
   }
 }
 
