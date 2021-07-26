@@ -24,14 +24,14 @@ class DropArea extends Element {
     this._highlight()
   }
 
-  _dropFile(e) {
+  async _dropFile(e) {
     this.preventDefault(e)
     this._removeHighlight()
 
     const file = Array.prototype.find.call(e.dataTransfer.items, Helpers.isPDFFile)
 
     if (file) {
-      this.read(file.getAsFile())
+      await this.read(file.getAsFile())
     }
   }
 }

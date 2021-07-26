@@ -24,8 +24,8 @@ class Element {
     })
   }
 
-  read(file) {
-    this._pdf.read(file)
+  async read(file) {
+    await this._pdf.read(file)
   }
 }
 

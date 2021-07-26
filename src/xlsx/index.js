@@ -3,7 +3,7 @@ import zipcelx from 'zipcelx'
 class XLSX {
   constructor() {}
 
-  download(header, collection) {
+  async download(header, collection) {
     const filename = `covid-mg-${Date.now()}`
 
     const config = {
@@ -13,7 +13,7 @@ class XLSX {
       }
     }
 
-    zipcelx(config)
+    await zipcelx(config)
   }
 }
 

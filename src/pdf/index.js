@@ -68,8 +68,8 @@ class PDF {
     ]
   }
 
-  async _onFileLoad(e) {
-    const pdf = await getDocument(e.target.result).promise
+  async _onFileLoad(file) {
+    const pdf = await getDocument(file).promise
     const pages = this._pagesToExtract.map(pageNumber => pdf.getPage(pageNumber))
     const pagesPromises = await Promise.all(pages);
     const rawPagesContent = await Promise.all(pagesPromises.map(this._extractPageContent))
@@ -83,20 +83,26 @@ class PDF {
 
     for (let city of citiesSet) {
       if (citiesMap.has(city)) {
-        cities.push(citiesMap.get(city))
+        citiesCollection.push(citiesMap.get(city))
       }
     }
 
     const formattedCollection = citiesCollection.map(this._toXLSXFormat)
 
-    this._xlsx.download(header, formattedCollection)
+    await this._xlsx.download(header, formattedCollection)
   }
 
   read(file) {
-    const reader = new FileReader()
-    reader.onload = this._onFileLoad.bind(this)
+    return new Promise((resolve) => {
+      const reader = new FileReader()
 
-    reader.readAsArrayBuffer(file)
+      reader.onload = async e => {
+        await this._onFileLoad(e.target.result)
+        resolve()
+      }
+
+      reader.readAsArrayBuffer(file)
+    })
   }
 }
 
