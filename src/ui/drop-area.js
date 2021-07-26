@@ -1,6 +1,6 @@
 import Element from './element'
 
-import helpers from '../helpers'
+import Helpers from '../helpers'
 
 class DropArea extends Element {
   constructor(pdf) {
@@ -28,7 +28,7 @@ class DropArea extends Element {
     this.preventDefault(e)
     this._removeHighlight()
 
-    const file = Array.prototype.find.call(e.dataTransfer.items, helpers.isPDF)
+    const file = Array.prototype.find.call(e.dataTransfer.items, Helpers.isPDFFile)
 
     if (file) {
       this.read(file.getAsFile())

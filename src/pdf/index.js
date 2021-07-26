@@ -2,9 +2,10 @@
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import worker from 'pdfjs-dist/build/pdf.worker.entry'
 
-import helpers from '../helpers'
+import Helpers from '../helpers'
+
 import header from '../constants/xlsx-header'
-import citiesSet from '../helpers/cities-set'
+import citiesSet from '../constants/cities-set'
 
 GlobalWorkerOptions.workerSrc = worker
 
@@ -25,9 +26,9 @@ class PDF {
 
   _toCleanData(content) {
     return content
-      .filter(helpers.emptyString)
-      .filter(helpers.uppercaseOnlyOrNumbersString)
-      .filter(helpers.uselessString)
+      .filter(Helpers.emptyString)
+      .filter(Helpers.uppercaseOnlyOrNumbersString)
+      .filter(Helpers.dirtyString)
   }
 
   _toCitiesData = collection => {
@@ -70,15 +71,15 @@ class PDF {
   async _onFileLoad(e) {
     const pdf = await getDocument(e.target.result).promise
     const pages = this._pagesToExtract.map(pageNumber => pdf.getPage(pageNumber))
-    const promises = await Promise.all(pages);
-    const rawPagesContent = await Promise.all(promises.map(this._extractPageContent))
+    const pagesPromises = await Promise.all(pages);
+    const rawPagesContent = await Promise.all(pagesPromises.map(this._extractPageContent))
     const cleanPagesContent = rawPagesContent.map(this._toCleanData)
 
     const citiesMap = cleanPagesContent
       .map(this._toCitiesData)
-      .reduce(helpers.toSingleCollection, new Map())
+      .reduce(Helpers.toSingleMap, new Map())
 
-    const cities = []
+    const citiesCollection = []
 
     for (let city of citiesSet) {
       if (citiesMap.has(city)) {
@@ -86,9 +87,9 @@ class PDF {
       }
     }
 
-    const collection = cities.map(this._toXLSXFormat)
+    const formattedCollection = citiesCollection.map(this._toXLSXFormat)
 
-    this._xlsx.download(header, collection)
+    this._xlsx.download(header, formattedCollection)
   }
 
   read(file) {
