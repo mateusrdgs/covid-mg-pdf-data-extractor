@@ -1,21 +1,19 @@
 import Element from './element'
 
-import pdf from '../pdf'
-
 class Input extends Element {
-  constructor() {
+  constructor(pdf) {
     const selector = '.input'
     const events = [ 'change', 'click' ]
     const handlers = ['_change', '_click']
 
-    super(selector, events, handlers)
+    super(selector, events, handlers, pdf)
   }
 
   _change(e) {
     const file = e.target.files[0]
 
     if (file) {
-      pdf.read(file)
+      this.read(file)
     }
   }
 

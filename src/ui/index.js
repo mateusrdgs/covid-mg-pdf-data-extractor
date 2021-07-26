@@ -1,10 +1,14 @@
 import Input from "./input";
 import DropArea from "./drop-area";
 
+import PDF from '../pdf'
+
 class UI {
   constructor() {
-    this._input = new Input()
-    this._dropArea = new DropArea()
+    const pdf = new PDF()
+
+    this._input = new Input(pdf)
+    this._dropArea = new DropArea(pdf)
   }
 
   start() {

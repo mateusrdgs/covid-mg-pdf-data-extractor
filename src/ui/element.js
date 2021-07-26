@@ -2,11 +2,13 @@ class Element {
   _element
   _events
   _handlers
+  _pdf
 
-  constructor(selector, events, handlers) {
+  constructor(selector, events, handlers, pdf) {
     this._element = document.querySelector(selector)
     this._events = events
     this._handlers = handlers
+    this._pdf = pdf
   }
 
   preventDefault(e) {
@@ -20,6 +22,10 @@ class Element {
       const handler = this[handlerName].bind(this)
       this._element.addEventListener(event, handler)
     })
+  }
+
+  read(file) {
+    this._pdf.read(file)
   }
 }
 
