@@ -1,0 +1,180 @@
+:root {
+  --primary: #2CC990;
+  --radius-box: 5px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+body {
+  align-items: center;
+  display: flex;
+  font-family: sans-serif;
+  justify-content: center;
+}
+
+.app {
+  display: flex;
+  position: relative;
+  margin: 0 auto;
+  max-width: 480px;
+  width: 90%;
+
+  .droparea {
+    border-radius: var(--radius-box);
+    border: 2px dashed var(--primary);
+    color: var(--primary);
+    padding: 36px;
+    position: relative;
+    text-align: center;
+    transition: background-color .2s ease-in, color .2s ease-in, transform .4s ease-in-out, opacity .5s ease-in-out;
+    width: 100%;
+
+    &.-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-100%);
+    }
+
+    &.-highlight,
+    &:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    & > .input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      width: 100%;
+    }
+
+    & > .input:hover {
+      cursor: pointer;
+    }
+  }
+
+  .form {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transform: translateX(100%);
+    width: 100%;
+  
+    &.-show {
+      opacity: 1;
+      transform: translateX(0);
+      transition: transform .4s .1s ease-in-out, opacity .5s .1s ease-in-out;
+    }
+  
+    & > fieldset {
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-box);;
+      padding: 0 12px 18px;
+      margin-bottom: 16px;
+      height: 100%;
+  
+      & > legend {
+        margin-bottom: 12px;
+      }
+  
+      & > div {
+        display: grid;
+        grid-gap: 16px;
+        grid-template-columns: repeat(3, 1fr);
+
+        & > label {
+          align-items: center;
+          display: flex;
+          width: 100%;
+
+          &:hover {
+            cursor: pointer;
+          }
+
+          & > input {
+            display: none;
+
+            &:checked {
+
+              & + .mark {
+                background-color: var(--primary);
+                
+                &::before,
+                &::after {
+                  opacity: 1;
+                }
+              }
+            }
+          }
+
+          & > .mark {
+            border: 1px solid #CCC;
+            transition: background-color .1s ease-in;
+            border-radius: 2px;
+            height: 14px;
+            margin-right: 8px;
+            min-width: 14px;
+            position: relative;
+
+            &::before,
+            &::after {
+              content: '';
+              display: inline-block;
+              background-color: white;
+              opacity: 0;
+              position: absolute;
+              transition: opacity .1s .1s ease-in;
+            }
+
+            &::before {
+              left: 0;
+              top: 0;
+              height: 5px;
+              transform: rotateZ(-45deg) translate(-50%, 90%);
+              width: 2px;
+            }
+
+            &::after {
+              right: 0;
+              top: 0;
+              height: 8px;
+              transform: rotateZ(45deg) translate(-50%, 50%);
+              width: 2px;
+            }
+          }
+        }
+      }
+    }
+
+    > .button {
+      border-radius: 2px;
+      border: none;
+      color: white;
+      background-color: var(--primary);
+      padding: 10px 20px;
+      width: 100%;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
