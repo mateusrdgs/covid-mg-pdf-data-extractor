@@ -3,15 +3,18 @@ import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist'
 import worker from 'pdfjs-dist/build/pdf.worker.entry'
 
 import helpers from '../helpers'
+import header from '../constants/xlsx-header'
 import citiesSet from '../helpers/cities-set'
-import xlsx from './xlsx'
 
 GlobalWorkerOptions.workerSrc = worker
 
 class PDF {
   _pagesToExtract = [5, 6]
+  _xlsx
 
-  constructor() {}
+  constructor(xlsx) {
+    this._xlsx = xlsx
+  }
 
   async _extractPageContent(page) {
     const textContent = await page.getTextContent()
@@ -54,6 +57,16 @@ class PDF {
     return cities
   }
 
+  _toXLSXFormat({ name, cases, deaths, first_doses, second_doses }) {
+    return [
+      { value: name, type: 'string' },
+      { value: cases, type: 'string' },
+      { value: deaths, type: 'string' },
+      { value: first_doses, type: 'string' },
+      { value: second_doses, type: 'string' }
+    ]
+  }
+
   async _onFileLoad(e) {
     const pdf = await getDocument(e.target.result).promise
     const pages = this._pagesToExtract.map(pageNumber => pdf.getPage(pageNumber))
@@ -73,7 +86,9 @@ class PDF {
       }
     }
 
-    xlsx.download(cities)
+    const collection = cities.map(this._toXLSXFormat)
+
+    this._xlsx.download(header, collection)
   }
 
   read(file) {
