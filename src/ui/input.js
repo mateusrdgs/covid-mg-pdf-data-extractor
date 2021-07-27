@@ -1,12 +1,13 @@
 import Element from './element'
 
 class Input extends Element {
-  constructor(pdf, onInputFile) {
+
+  constructor(onInputFile) {
     const selector = '.input'
     const events = [ 'change', 'click' ]
     const handlers = ['_change', '_click']
 
-    super(selector, events, handlers, pdf)
+    super(selector, events, handlers)
 
     this.onInputFile = onInputFile
   }

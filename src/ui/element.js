@@ -2,13 +2,11 @@ class Element {
   _element
   _events
   _handlers
-  _pdf
 
-  constructor(selector, events, handlers, pdf) {
+  constructor(selector, events, handlers) {
     this._element = document.querySelector(selector)
     this._events = events
     this._handlers = handlers
-    this._pdf = pdf
   }
 
   preventDefault(e) {
@@ -22,10 +20,6 @@ class Element {
       const handler = this[handlerName].bind(this)
       this._element.addEventListener(event, handler)
     })
-  }
-
-  async read(file) {
-    await this._pdf.read(file)
   }
 }
 

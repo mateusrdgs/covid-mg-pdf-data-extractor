@@ -4,12 +4,12 @@ import Helpers from '../helpers'
 
 class DropArea extends Element {
 
-  constructor(pdf, onDropFile) {
+  constructor(onDropFile) {
     const selector = '.droparea'
     const events = ['dragenter', 'dragleave', 'dragover', 'drop']
     const handlers = ['_highlight', '_removeHighlight', '_mouseOver', '_dropFile']
 
-    super(selector, events, handlers, pdf)
+    super(selector, events, handlers)
 
     this.onDropFile = onDropFile
   }
