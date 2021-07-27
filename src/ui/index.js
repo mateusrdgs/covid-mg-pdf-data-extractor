@@ -12,8 +12,8 @@ class UI {
   constructor() {
     this._xlsx = new XLSX()
     this._pdf = new PDF()
-    this._input = new Input(this._pdf, this._inputFile.bind(this))
-    this._dropArea = new DropArea(this._pdf, this._inputFile.bind(this))
+    this._input = new Input(this._inputFile.bind(this))
+    this._dropArea = new DropArea(this._inputFile.bind(this))
     this._form = new Form(this._formSubmit.bind(this))
   }
 
