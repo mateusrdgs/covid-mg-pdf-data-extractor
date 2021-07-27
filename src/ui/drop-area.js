@@ -3,12 +3,15 @@ import Element from './element'
 import Helpers from '../helpers'
 
 class DropArea extends Element {
-  constructor(pdf) {
+
+  constructor(onDropFile) {
     const selector = '.droparea'
     const events = ['dragenter', 'dragleave', 'dragover', 'drop']
     const handlers = ['_highlight', '_removeHighlight', '_mouseOver', '_dropFile']
 
-    super(selector, events, handlers, pdf)
+    super(selector, events, handlers)
+
+    this.onDropFile = onDropFile
   }
 
   _highlight() {
@@ -31,8 +34,12 @@ class DropArea extends Element {
     const file = Array.prototype.find.call(e.dataTransfer.items, Helpers.isPDFFile)
 
     if (file) {
-      await this.read(file.getAsFile())
+      this.onDropFile(file.getAsFile())
     }
+  }
+
+  hide() {
+    this._element.classList.add('-hidden');
   }
 }
 

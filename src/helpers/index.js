@@ -1,3 +1,5 @@
+import { headerMap } from '../constants/xlsx-header'
+
 class Helpers {
 
   static emptyString({ str }) {
@@ -18,6 +20,29 @@ class Helpers {
 
   static toSingleMap(acc, collection) {
     return new Map([...acc, ...collection])
+  }
+
+  static formPayloadToSchema(payload) {
+    const schema = new Set()
+
+    for (let key in payload) {
+      const value = payload[key]
+      if (value === 'on') {
+        schema.add(key)
+      }
+    }
+
+    return schema
+  }
+
+  static schemaToHeader(schema) {
+    const header = []
+
+    for(let key of schema) {
+      header.push({ value: headerMap[key], type: 'string' })
+    }
+
+    return header
   }
 }
 

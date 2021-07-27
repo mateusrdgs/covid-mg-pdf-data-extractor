@@ -1,6 +1,6 @@
 import UI from './ui'
 
-import './index.css'
+import './index.scss'
 
 (() => {
   const ui = new UI()

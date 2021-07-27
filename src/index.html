@@ -7,9 +7,50 @@
   <title>COVID MG - PDF DATA EXTRACTOR</title>
 </head>
 <body>
-  <div class="droparea">
-    drop your file or click to upload
-    <input type="file" name="input" id="input" class="input">
-  </div>
+  <section class="app">
+
+    <div class="droparea">
+      arraste o arquivo ou clique para fazer o upload
+      <input type="file" name="input" id="input" class="input" accept="application/pdf">
+    </div>
+    <form class="form">
+      <fieldset>
+        <legend>colunas</legend>
+        <div>
+            <label for="name">
+              <input type="checkbox" name="name" id="name" checked>
+              <div class="mark"></div>
+              cidade
+            </label>
+
+            <label for="cases">
+              <input type="checkbox" name="cases" id="cases" checked>
+              <div class="mark"></div>
+              casos
+            </label>
+
+            <label for="deaths">
+              <input type="checkbox" name="deaths" id="deaths" checked>
+              <div class="mark"></div>
+              óbitos
+            </label>
+
+            <label for="first_doses">
+              <input type="checkbox" name="first_doses" id="first_doses" checked>
+              <div class="mark"></div>
+              doses 1
+            </label>
+
+            <label for="second_doses">
+              <input type="checkbox" name="second_doses" id="second_doses" checked>
+              <div class="mark"></div>
+              doses 2
+            </label>
+
+        </div>
+      </fieldset>
+      <button class="button">baixar</button>
+    </form>
+  </section>
 </body>
 </html>

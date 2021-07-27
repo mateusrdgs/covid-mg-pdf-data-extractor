@@ -4,23 +4,19 @@ import worker from 'pdfjs-dist/build/pdf.worker.entry'
 
 import Helpers from '../helpers'
 
-import header from '../constants/xlsx-header'
 import citiesSet from '../constants/cities-set'
 
 GlobalWorkerOptions.workerSrc = worker
 
 class PDF {
   _pagesToExtract = [5, 6]
-  _xlsx
 
-  constructor(xlsx) {
-    this._xlsx = xlsx
-  }
+  constructor() {}
 
   async _extractPageContent(page) {
     const textContent = await page.getTextContent()
     const { items } = textContent
-  
+
     return items
   }
 
@@ -34,17 +30,17 @@ class PDF {
   _toCitiesData = collection => {
     const cities = new Map()
     const auxiliaryMap = new Map()
-  
+
     for (let item of collection) {
       const key = item.transform[5] // position on y axis (row)
-  
+
       if (auxiliaryMap.has(key)) {
         const valueOnKey = auxiliaryMap.get(key)
-  
+
         if (valueOnKey.length === 4) {
           const [name, cases, deaths, first_doses] = valueOnKey
           const data = { name, cases, deaths, first_doses, second_doses: item.str }
-  
+
           cities.set(name, data)
           auxiliaryMap.delete(key)
         } else {
@@ -54,42 +50,32 @@ class PDF {
         auxiliaryMap.set(key, [item.str])
       }
     }
-  
+
     return cities
   }
 
-  _toXLSXFormat({ name, cases, deaths, first_doses, second_doses }) {
-    return [
-      { value: name, type: 'string' },
-      { value: cases, type: 'string' },
-      { value: deaths, type: 'string' },
-      { value: first_doses, type: 'string' },
-      { value: second_doses, type: 'string' }
-    ]
-  }
+  _onFileLoad(file) {
+    return new Promise(async (resolve) => {
+      const pdf = await getDocument(file).promise
+      const pages = this._pagesToExtract.map(pageNumber => pdf.getPage(pageNumber))
+      const pagesPromises = await Promise.all(pages);
+      const rawPagesContent = await Promise.all(pagesPromises.map(this._extractPageContent))
+      const cleanPagesContent = rawPagesContent.map(this._toCleanData)
 
-  async _onFileLoad(file) {
-    const pdf = await getDocument(file).promise
-    const pages = this._pagesToExtract.map(pageNumber => pdf.getPage(pageNumber))
-    const pagesPromises = await Promise.all(pages);
-    const rawPagesContent = await Promise.all(pagesPromises.map(this._extractPageContent))
-    const cleanPagesContent = rawPagesContent.map(this._toCleanData)
+      const citiesMap = cleanPagesContent
+        .map(this._toCitiesData)
+        .reduce(Helpers.toSingleMap, new Map())
 
-    const citiesMap = cleanPagesContent
-      .map(this._toCitiesData)
-      .reduce(Helpers.toSingleMap, new Map())
+      const citiesCollection = []
 
-    const citiesCollection = []
-
-    for (let city of citiesSet) {
-      if (citiesMap.has(city)) {
-        citiesCollection.push(citiesMap.get(city))
+      for (let city of citiesSet) {
+        if (citiesMap.has(city)) {
+          citiesCollection.push(citiesMap.get(city))
+        }
       }
-    }
 
-    const formattedCollection = citiesCollection.map(this._toXLSXFormat)
-
-    await this._xlsx.download(header, formattedCollection)
+      resolve(citiesCollection)
+    })
   }
 
   read(file) {
@@ -97,8 +83,9 @@ class PDF {
       const reader = new FileReader()
 
       reader.onload = async e => {
-        await this._onFileLoad(e.target.result)
-        resolve()
+        const collection = await this._onFileLoad(e.target.result)
+
+        resolve(collection)
       }
 
       reader.readAsArrayBuffer(file)
