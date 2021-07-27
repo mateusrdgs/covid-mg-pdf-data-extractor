@@ -6,4 +6,12 @@ const header = [
   { value: 'Dose 2', type: 'string' }
 ]
 
+export const headerMap = {
+  'name': 'Cidade',
+  'cases': 'Casos',
+  'deaths': 'Óbitos',
+  'first_doses': 'Dose 1',
+  'second_doses': 'Dose 2'
+}
+
 export default header

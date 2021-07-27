@@ -1,24 +1,22 @@
 import Element from './element'
 
 class Input extends Element {
-  constructor(pdf) {
+  constructor(pdf, onInputFile) {
     const selector = '.input'
     const events = [ 'change', 'click' ]
     const handlers = ['_change', '_click']
 
     super(selector, events, handlers, pdf)
+
+    this.onInputFile = onInputFile
   }
 
   _change(e) {
     const file = e.target.files[0]
 
-    this._element.parentNode.classList.add('-hidden')
-    
-    document.querySelector('.form').classList.add('-show')
-
-    // if (file) {
-    //   this.read(file)
-    // }
+    if (file) {
+      this.onInputFile(file)
+    }
   }
 
   _click() {
