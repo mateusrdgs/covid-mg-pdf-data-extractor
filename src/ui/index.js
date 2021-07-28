@@ -12,17 +12,15 @@ class UI {
   constructor() {
     this._xlsx = new XLSX()
     this._pdf = new PDF()
-    this._input = new Input(this._inputFile.bind(this))
-    this._dropArea = new DropArea(this._inputFile.bind(this))
-    this._form = new Form(this._formSubmit.bind(this))
+    this._input = new Input()
+    this._dropArea = new DropArea()
+    this._form = new Form()
   }
 
   start() {
-    const elements = [ this._input, this._dropArea, this._form ]
-
-    elements.forEach(element => {
-      element.bindEvents()
-    })
+    this._dropArea.on('drop', this._inputFile.bind(this))
+    this._input.on('change', this._inputFile.bind(this))
+    this._form.on('submit', this._formSubmit.bind(this))
   }
 
   _inputFile(file) {

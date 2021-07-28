@@ -1,22 +1,20 @@
 import Element from './element'
 
 class Input extends Element {
-
-  constructor(onInputFile) {
+  constructor() {
     const selector = '.input'
     const events = [ 'change', 'click' ]
     const handlers = ['_change', '_click']
 
     super(selector, events, handlers)
-
-    this.onInputFile = onInputFile
   }
 
   _change(e) {
     const file = e.target.files[0]
+    const event = this.events.find(event => event.type === e.type)
 
-    if (file) {
-      this.onInputFile(file)
+    if (file && event) {
+      event.callback(file)
     }
   }
 

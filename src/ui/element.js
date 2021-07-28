@@ -1,12 +1,10 @@
 class Element {
   _element
-  _events
-  _handlers
+  events = []
 
   constructor(selector, events, handlers) {
     this._element = document.querySelector(selector)
-    this._events = events
-    this._handlers = handlers
+    this._bindEvents(this._element, events, handlers)
   }
 
   preventDefault(e) {
@@ -14,12 +12,16 @@ class Element {
     e.stopPropagation()
   }
 
-  bindEvents() {
-    this._events.forEach((event, index) => {
-      const handlerName = this._handlers[index]
+  _bindEvents(element, events, handlers) {
+    events.forEach((event, index) => {
+      const handlerName = handlers[index]
       const handler = this[handlerName].bind(this)
-      this._element.addEventListener(event, handler)
+      element.addEventListener(event, handler)
     })
+  }
+
+  on(type, callback) {
+    this.events.push({ type, callback })
   }
 }
 
