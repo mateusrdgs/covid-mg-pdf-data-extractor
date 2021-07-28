@@ -1,6 +1,7 @@
 :root {
   --primary: #2CC990;
   --radius-box: 5px;
+  --disabled: #CCC;
 }
 
 *,
@@ -86,7 +87,7 @@ body {
   
     & > fieldset {
       border: 2px dashed var(--primary);
-      border-radius: var(--radius-box);;
+      border-radius: var(--radius-box);
       padding: 0 12px 18px;
       margin-bottom: 16px;
       height: 100%;
@@ -126,7 +127,7 @@ body {
           }
 
           & > .mark {
-            border: 1px solid #CCC;
+            border: 1px solid var(--disabled);
             transition: background-color .1s ease-in;
             border-radius: 2px;
             height: 14px;
@@ -165,15 +166,21 @@ body {
     }
 
     > .button {
+      background-color: var(--primary);
       border-radius: 2px;
       border: none;
       color: white;
-      background-color: var(--primary);
       padding: 10px 20px;
+      transition: background-color .2s ease-in;
       width: 100%;
 
       &:hover {
         cursor: pointer;
+      }
+
+      &.-disabled {
+        background-color: var(--disabled);
+        pointer-events: none;
       }
     }
   }
