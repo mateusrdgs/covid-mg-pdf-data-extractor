@@ -20,7 +20,7 @@ class Form extends Element {
   _submit(e) {
     this.preventDefault(e)
 
-    if (this._isFormValid) {
+    if (this._isValid) {
       const formData = new FormData(e.target)
       const payload = Object.fromEntries(formData.entries())
 
@@ -40,20 +40,19 @@ class Form extends Element {
 
   _inputCheck() {
     const inputs = this._element.querySelectorAll('input[type="checkbox"]')
-    const everyInputIsUnchecked = Array.prototype.every.call(inputs, input => !input.checked)
+    const someInputIsChecked = Array.prototype.some.call(inputs, input => input.checked)
 
-    this.isValid = everyInputIsUnchecked
-
-    this._changeDownloadButtonState(everyInputIsUnchecked)
+    this._isValid = someInputIsChecked
+    this._changeDownloadButtonState()
   }
 
-  _changeDownloadButtonState(everyInputIsUnchecked) {
+  _changeDownloadButtonState() {
     const downloadButton = this._element.querySelector('button')
 
-    if (everyInputIsUnchecked) {
-      downloadButton.classList.add('-disabled');
-    } else {
+    if (this._isValid) {
       downloadButton.classList.remove('-disabled');
+    } else {
+      downloadButton.classList.add('-disabled');
     }
   }
 
